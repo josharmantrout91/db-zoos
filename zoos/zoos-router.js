@@ -12,9 +12,9 @@ const knexConfig = {
 const db = knex(knexConfig);
 // endpoints here
 
-// GET our root
+// GET zoos root
 
-router.get("/", (req, res) => {
+router.get("/zoos", (req, res) => {
   db("zoos")
     .then(zoos => {
       res.status(200).json(zoos);
@@ -24,9 +24,21 @@ router.get("/", (req, res) => {
     });
 });
 
+// GET bears root
+
+router.get("/bears", (req, res) => {
+  db("bears")
+    .then(bears => {
+      res.status(200).json(bears);
+    })
+    .catch(error => {
+      res.status(500).json(error);
+    });
+});
+
 // GET zoo by ID
 
-router.get("/:id", (req, res) => {
+router.get("/zoos/:id", (req, res) => {
   db("zoos")
     .where({ id: req.params.id })
     .then(zoos => {
@@ -39,7 +51,7 @@ router.get("/:id", (req, res) => {
 
 // POST a new zoo
 
-router.post("/", (req, res) => {
+router.post("/zoos", (req, res) => {
   const newZoo = req.body;
   db("zoos")
     .insert(newZoo)
@@ -60,7 +72,7 @@ router.post("/", (req, res) => {
 
 // UPDATE the name of an existing zoo
 
-router.put("/:id", (req, res) => {
+router.put("/zoos/:id", (req, res) => {
   const id = req.params.id;
   db("zoos")
     .where({ id })
@@ -83,18 +95,21 @@ router.put("/:id", (req, res) => {
 
 // DELETE a zoo
 
-router.delete("/:id", (req, res) => {
-    const id = req.params.id;
-    db("zoos")
-    .where({id})
+router.delete("/zoos/:id", (req, res) => {
+  const id = req.params.id;
+  db("zoos")
+    .where({ id })
     .del()
     .then(count => {
-        if (count > 0) {
-            res.status(204).json({message: "zoo successfully deleted"})
-        } else {
-            res.status(404).json({message: })
-        }
+      if (count > 0) {
+        res.status(204).json({ message: "zoo successfully deleted" });
+      } else {
+        res.status(404).json({ message: "unable to locate desired zoo" });
+      }
     })
-})
+    .catch(error => {
+      res.status(500).json(error);
+    });
+});
 
 module.exports = router;
