@@ -83,6 +83,27 @@ router.post("/zoos", (req, res) => {
     });
 });
 
+// POST a new bear
+
+router.post("/bears", (req, res) => {
+  const newBear = req.body;
+  db("bears")
+    .insert(newBear)
+    .then(ids => {
+      const id = [ids];
+
+      db("bears")
+        .where({ id })
+        .first()
+        .then(bear => {
+          res.status(201).json(bear);
+        });
+    })
+    .catch(error => {
+      res.status(500).json({ message: "unable to add new bear" });
+    });
+});
+
 // UPDATE the name of an existing zoo
 
 router.put("/zoos/:id", (req, res) => {
