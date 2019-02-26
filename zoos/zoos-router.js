@@ -127,6 +127,31 @@ router.put("/zoos/:id", (req, res) => {
     });
 });
 
+// UPDATE the name of an existing zoo
+
+router.put("/bears/:id", (req, res) => {
+  const id = req.params.id;
+  db("bears")
+    .where({ id })
+    .update(req.body)
+    .then(count => {
+      if (count > 0) {
+        db("bears")
+          .where({ id })
+          .then(bear => {
+            res.status(200).json(bear);
+          });
+      } else {
+        res
+          .status(404)
+          .json({ message: "could not locate intended bear. try honey." });
+      }
+    })
+    .catch(error => {
+      res.status(500).json(error);
+    });
+});
+
 // DELETE a zoo
 
 router.delete("/zoos/:id", (req, res) => {
