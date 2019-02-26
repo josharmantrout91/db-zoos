@@ -49,6 +49,19 @@ router.get("/zoos/:id", (req, res) => {
     });
 });
 
+// GET bear by ID
+
+router.get("/bears/:id", (req, res) => {
+  db("bears")
+    .where({ id: req.params.id })
+    .then(bears => {
+      res.status(200).json(bears);
+    })
+    .catch(error => {
+      res.status(500).json(error);
+    });
+});
+
 // POST a new zoo
 
 router.post("/zoos", (req, res) => {
